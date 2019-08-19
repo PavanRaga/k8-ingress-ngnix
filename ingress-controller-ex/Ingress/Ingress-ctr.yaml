@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingressctrdep
+spec:
+  selector:
+    matchLabels:
+      app: ingressctrdepapp
+  template:
+    metadata:
+      labels:
+        app: ingressctrdepapp
+    spec:
+      serviceAccountName: nginx-ingress
+      containers:
+      - name: ingressctrpod
+        image: nginx/nginx-ingress:edge
+        ports:
+        - containerPort: 80
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        args:
+          - -nginx-configmaps=$(POD_NAMESPACE)/nginx-config
+          - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret

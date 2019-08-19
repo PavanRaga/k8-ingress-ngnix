@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teadep
+spec:
+  selector:
+    matchLabels:
+      app: teadepapp
+  template:
+    metadata:
+      labels:
+        app: teadepapp
+    spec:
+      containers:
+      - name: teapod
+        image: nginxdemos/hello:plain-text
+        ports:
+        - containerPort: 80
